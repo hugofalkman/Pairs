@@ -12,6 +12,10 @@
 		B1BE713B2505282C005A4507 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1BE713A2505282C005A4507 /* Assets.xcassets */; };
 		B1BE713E2505282C005A4507 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1BE713D2505282C005A4507 /* Preview Assets.xcassets */; };
 		B1BE71412505282C005A4507 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1BE713F2505282C005A4507 /* Main.storyboard */; };
+		B1BE714D25053BBF005A4507 /* GridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BE714B25053BBF005A4507 /* GridLayout.swift */; };
+		B1BE714E25053BBF005A4507 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BE714C25053BBF005A4507 /* Grid.swift */; };
+		B1BE715125054B5F005A4507 /* capitals.json in Resources */ = {isa = PBXBuildFile; fileRef = B1BE714F25054B5F005A4507 /* capitals.json */; };
+		B1BE715225054B5F005A4507 /* math.json in Resources */ = {isa = PBXBuildFile; fileRef = B1BE715025054B5F005A4507 /* math.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +27,10 @@
 		B1BE71402505282C005A4507 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B1BE71422505282C005A4507 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1BE71432505282C005A4507 /* Pairs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pairs.entitlements; sourceTree = "<group>"; };
+		B1BE714B25053BBF005A4507 /* GridLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridLayout.swift; sourceTree = "<group>"; };
+		B1BE714C25053BBF005A4507 /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		B1BE714F25054B5F005A4507 /* capitals.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capitals.json; sourceTree = "<group>"; };
+		B1BE715025054B5F005A4507 /* math.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = math.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +65,10 @@
 			children = (
 				B1BE713625052828005A4507 /* AppDelegate.swift */,
 				B1BE713825052828005A4507 /* ContentView.swift */,
+				B1BE714F25054B5F005A4507 /* capitals.json */,
+				B1BE715025054B5F005A4507 /* math.json */,
+				B1BE714C25053BBF005A4507 /* Grid.swift */,
+				B1BE714B25053BBF005A4507 /* GridLayout.swift */,
 				B1BE713A2505282C005A4507 /* Assets.xcassets */,
 				B1BE713F2505282C005A4507 /* Main.storyboard */,
 				B1BE71422505282C005A4507 /* Info.plist */,
@@ -132,8 +144,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1BE715225054B5F005A4507 /* math.json in Resources */,
 				B1BE71412505282C005A4507 /* Main.storyboard in Resources */,
 				B1BE713E2505282C005A4507 /* Preview Assets.xcassets in Resources */,
+				B1BE715125054B5F005A4507 /* capitals.json in Resources */,
 				B1BE713B2505282C005A4507 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,8 +159,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1BE714D25053BBF005A4507 /* GridLayout.swift in Sources */,
 				B1BE713925052828005A4507 /* ContentView.swift in Sources */,
 				B1BE713725052828005A4507 /* AppDelegate.swift in Sources */,
+				B1BE714E25053BBF005A4507 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
