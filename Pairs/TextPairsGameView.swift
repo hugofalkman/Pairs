@@ -1,5 +1,5 @@
 //
-//  JsonABPairsView.swift
+//  TextPairsGameView.swift
 //  Pairs
 //
 //  Created by H Hugo Falkman on 06/09/2020.
@@ -8,224 +8,136 @@
 
 import SwiftUI
 
-//class Deck: ObservableObject {
-//    let allCards: [Card] = Bundle.main.decode("capitals.json")
-//    @Published var cardParts = [CardPart]()
-//
-//    init() {
-//        let selectedCards = allCards.shuffled().prefix(12)
-//
-//        for card in selectedCards {
-//            cardParts.append(CardPart(id: card.id, text: card.a))
-//            cardParts.append(CardPart(id: card.id, text: card.b))
-//        }
-//
-//        cardParts.shuffle()
-//    }
-//
-//    func set(_ index: Int, to state: CardState) {
-//        cardParts[index].state = state
-//    }
-//}
-//
-//struct Card: Codable {
-//    let id = UUID()
-//    let a: String
-//    let b: String
-//
-//}
-
-struct CardView: View {
-    var card: PairsGame<UUID,String>.Card
-    
-    var body: some View {
-        ZStack {
-            CardBack()
-                .rotation3DEffect(.degrees(card.state == .unflipped ? 0 : 180), axis: (x: 0, y: 1, z: 0))
-                .opacity(card.state == .unflipped ? 1 : 0)
-            CardFront(card: card)
-                .rotation3DEffect(.degrees(card.state != .unflipped ? 0 : -180), axis: (x: 0, y: 1, z: 0))
-                .opacity(card.state != .unflipped ? 1 : -1)
-        }
-    }
-}
-
-enum CardState {
-    case unflipped, flipped, matched
-}
-
-struct CardPart {
-    let id: UUID
-    let text: String
-    var state = CardState.unflipped
-}
-
-struct CardBack: View {
-    var body: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .fill(Color.blue)
-            .frame(width: 140, height: 100)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .strokeBorder(Color.white, lineWidth: 2)
-            )
-    }
-}
-
-struct CardFront: View {
-    var card: PairsGame<UUID,String>.Card
-    
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(card.state == .matched ? Color.green : Color.white)
-                .frame(width: 140, height: 100)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(Color.white, lineWidth: 2)
-                )
-            Text(card.content)
-                .font(.title)
-                .foregroundColor(.black)
-        }
-    }
-}
-
-enum GameState {
-    case start, firstFlipped
-}
-
-struct GridStack<Content: View>: View {
-    let rows: Int
-    let columns: Int
-    let content: (Int, Int) -> Content
-    
-    var body: some View {
-        VStack {
-            ForEach(0..<rows, id: \.self) { row in
-                HStack{
-                    ForEach(0..<self.columns, id: \.self) { column in
-                        self.content(row, column)
-                    }
-                }
-            }
-        }
-    }
-}
-
 struct TextPairsGameView: View {
-    var viewModel: TextPairsGame
+    @ObservedObject var viewModel: TextPairsGame
     
-//    @ObservedObject var deck = Deck()
-    
-    @State private var state = GameState.start
-    @State private var firstIndex: Int?
-    @State private var secondIndex: Int?
-    
-    @State private var timeRemaining = 100
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    let rowCount = 4
-    let columnCount = 6
+    @State private var timeRemainingString = " "
+    @State private var timer = Timer.publish(every: timerUpdateInterval, tolerance: 0.2 * timerUpdateInterval, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color(white: 0.3), .black]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: gradientColors), startPoint: .top, endPoint: .bottom)
             VStack {
                 Image(decorative: "pairs")
                 
-                GridStack(rows: rowCount, columns: columnCount, content: card)
+                GridStack(viewModel.cards, numberOfRows: viewModel.numberOfGridRows) { card in
+                    CardView(card: card)
+                        .accessibility(addTraits: .isButton)
+                        .accessibility(label: Text(card.content))
+                        .onTapGesture {
+                            withAnimation(.linear(duration: self.animationDuration)) {
+                                self.viewModel.flip(card)
+                            }
+                        }
+                        
+                }
                 
-                Text("Time: \(100 - timeRemaining)")
+                Text(timeRemainingString)
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
+                    .padding(.bottom)
+                
+                Button(action: {
+                    let interval = Self.timerUpdateInterval
+                    timer = Timer.publish(every: interval, tolerance: 0.2 * interval, on: .main, in: .common).autoconnect()
+                    withAnimation(.easeIn(duration: self.animationDuration)) {
+                        self.viewModel.resetGame()
+                    }
+                }, label: buttonLabel)
+                    .buttonStyle(PlainButtonStyle())
             }
                 .padding()
         }
-//            .onReceive(timer, perform: updateTimer)
-    }
-    
-    func card(atRow row: Int, column: Int) -> some View {
-        let index = (row * columnCount) + column
-        let card = viewModel.cards[index]
-        
-        return CardView(card: card)
-            .accessibility(addTraits: .isButton)
-            .accessibility(label: Text(card.content))
-            .onTapGesture {
-                self.viewModel.choose(card: card)
+            .onReceive(timer) { _ in
+                let unmatched = self.viewModel.cards.filter { $0.state != .matched }
+                guard unmatched.count > 0 else {
+                    timer.upstream.connect().cancel()
+                    return
+                }
+                timeRemainingString = "Time remaining: \(Int(0.5 + viewModel.timeRemaining))"
             }
     }
     
-//    func flip(_ index: Int) {
-//        guard deck.cardParts[index].state == .unflipped else { return }
-//        guard secondIndex == nil else { return }
-//
-//        switch state {
-//        case .start:
-//            withAnimation {
-//                firstIndex = index
-//                deck.set(index, to: .flipped)
-//                state = .firstFlipped
-//            }
-//        case .firstFlipped:
-//            withAnimation {
-//                secondIndex = index
-//                deck.set(index, to: .flipped)
-//                checkMatches()
-//            }
-//        }
-//    }
-//
-//    func match() {
-//        guard let first = firstIndex, let second = secondIndex else {
-//            fatalError("There must be two flipped cards before matching.")
-//        }
-//        withAnimation {
-//            deck.set(first, to: .matched)
-//            deck.set(second, to: .matched)
-//        }
-//        reset()
-//    }
-//
-//    func noMatch() {
-//        guard let first = firstIndex, let second = secondIndex else {
-//            fatalError("There must be two flipped cards before matching.")
-//        }
-//        withAnimation {
-//            deck.set(first, to: .unflipped)
-//            deck.set(second, to: .unflipped)
-//        }
-//        reset()
-//    }
-//
-//    func reset() {
-//        firstIndex = nil
-//        secondIndex = nil
-//        state = .start
-//    }
-//
-//    func checkMatches() {
-//        guard let first = firstIndex, let second = secondIndex else {
-//            fatalError("There must be two flipped cards before matching.")
-//        }
-//        if deck.cardParts[first].id == deck.cardParts[second].id {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: match)
-//        } else {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: noMatch)
-//        }
-//    }
-//
-//    func updateTimer(_ currentTime: Date) {
-//        let unmatched = deck.cardParts.filter { $0.state != .matched }
-//        guard unmatched.count > 0 else { return }
-//
-//        if timeRemaining > 0 {
-//            timeRemaining -= 1
-//        }
-//    }
+    // MARK: - Drawing Constants
+    
+    private static let timerUpdateInterval = 1.0
+    private let gradientColors = [Color(white: 0.3), .black]
+    private let animationDuration = 0.75
+    private func buttonLabel() -> some View {
+        Text("New Game")
+            .font(.title)
+            .padding(5)
+            .background((RoundedRectangle(cornerRadius: 10)).fill(Color.white))
+    }
 }
 
+struct CardView: View {
+    var card: TextPairsGame.Game.Card
+    
+    var body: some View {
+        Group {
+            if card.state != .unflipped {
+                Text(card.content)
+            }
+        }
+            .font(.title)
+            .foregroundColor(.black)
+            .modifier(viewAsCard(isFaceUp: card.state != .unflipped, isMatched: card.state == .matched ))
+            .frame(width: cardSize.width, height: cardSize.height)
+    }
+    
+    // MARK: - Drawing Constants
+    
+    private let cardSize = CGSize(width: 140, height: 100)
+}
+
+struct viewAsCard: AnimatableModifier {
+    var rotation: Double
+    var isMatched: Bool
+    
+    init(isFaceUp: Bool, isMatched: Bool) {
+        rotation = isFaceUp ? 0 : 180
+        self.isMatched = isMatched
+    }
+    
+    var isFaceUp: Bool {
+        rotation < 90
+    }
+    
+    var animatableData: Double {
+        get { return rotation }
+        set { rotation = newValue }
+    }
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            // CardFront
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(isMatched ? cardColors[.match]! : cardColors[.front]!)
+                content
+            }
+                .opacity(isFaceUp ? 1 : 0)
+            // CardBack
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(cardColors[.back]!)
+                .opacity(isFaceUp ? 0 : 1)
+        }
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .strokeBorder(cardColors[.edge]!, lineWidth: edgeLineWidth)
+            )
+            .rotation3DEffect(Angle.degrees(rotation), axis: (0,1,0))
+    }
+    
+    // MARK: - Drawing Constants
+    
+    private let cornerRadius: CGFloat = 16
+    private enum colorChoices { case back, front, match, edge }
+    private let cardColors: [colorChoices: Color] =
+        [.back: .blue, .front: .white, .match: .green, .edge: .white]
+    private let edgeLineWidth: CGFloat = 2
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

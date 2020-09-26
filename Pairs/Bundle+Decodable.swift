@@ -1,5 +1,5 @@
 //
-//  Bundle+Decode.swift
+//  Bundle+Decodable.swift
 //  Pairs
 //
 //  Created by H Hugo Falkman on 08/09/2020.
