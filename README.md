@@ -1,5 +1,5 @@
 # Pairs
-### SwiftUI Live project restructured to MVVM architecture
+### SwiftUI Live project restructured using the MVVM architecture
 
 This repository starts from the "SwiftUI Live: Building an app from scratch" demo at https://www.youtube.com/watch?v=SroTB1buuD0 . (The code is  available here https://github.com/twostraws/SwiftOnSundays/tree/main/022%20Pairs )
 
