@@ -19,6 +19,7 @@
 		B1BE71542507A7C1005A4507 /* PairsGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BE71532507A7C1005A4507 /* PairsGame.swift */; };
 		B1BE71562507AE79005A4507 /* TextPairsGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BE71552507AE79005A4507 /* TextPairsGame.swift */; };
 		B1BE71582507C43A005A4507 /* Bundle+Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BE71572507C43A005A4507 /* Bundle+Decodable.swift */; };
+		B1C1425B25220061004629F4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B1C1425A25220061004629F4 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		B1BE71532507A7C1005A4507 /* PairsGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairsGame.swift; sourceTree = "<group>"; };
 		B1BE71552507AE79005A4507 /* TextPairsGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPairsGame.swift; sourceTree = "<group>"; };
 		B1BE71572507C43A005A4507 /* Bundle+Decodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Decodable.swift"; sourceTree = "<group>"; };
+		B1C1425A25220061004629F4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 		B1BE712A25052827005A4507 = {
 			isa = PBXGroup;
 			children = (
+				B1C1425A25220061004629F4 /* README.md */,
 				B1BE713525052828005A4507 /* Pairs */,
 				B1BE713425052828005A4507 /* Products */,
 			);
@@ -153,6 +156,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1C1425B25220061004629F4 /* README.md in Resources */,
 				B1BE715225054B5F005A4507 /* math.json in Resources */,
 				B1BE71412505282C005A4507 /* Main.storyboard in Resources */,
 				B1BE713E2505282C005A4507 /* Preview Assets.xcassets in Resources */,
